@@ -27,7 +27,7 @@ useEffect(()=>{
     }
   },[router.isReady]);
 
-  const [file, setFile] = useLocalStorage('file', null);
+  const [file, setFile] = useState(null);
   const [fileLoaded, setFileLoaded] = useState(false);
   useEffect(()=>{
     console.log(file)
@@ -55,10 +55,11 @@ useEffect(()=>{
             console.error(err);
             toast.update(popup, { 
                 ...toastOptions, 
-                render: `${err.response?.data ?? err.message}`, 
+                render: `File not found.`, 
                 type: "error", 
                 isLoading: false,
             });
+            router.push(`/`);
         });
     }
   },[fileName]);
@@ -78,7 +79,7 @@ useEffect(()=>{
     }
   }
 
-  const htmlLog = (o) => {
+  const htmlLog = (o, wrapped) => {
     function isJSON(str) {
         try {
             JSON.parse(str);
@@ -86,6 +87,18 @@ useEffect(()=>{
             return false;
         }
         return true;
+    }
+    if(wrapped){
+        return <pre className="wrapper">
+            <div className="object">
+                <div className="value">
+                    <div class="key">
+                        <span class="solid"></span>
+                    </div>
+                    {htmlLog(file[sIndex])}
+                </div>
+            </div>
+        </pre>
     }
     switch(typeof o){
         case "object":
@@ -106,7 +119,43 @@ useEffect(()=>{
         case "number": case "boolean": 
             return <div className="number">{o}</div>;
         default:
-            console.log(typeof o);
+            return <></>;
+    }
+  }
+
+  const [deleteValue, setDeleteValue] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const deleteFile = (fileName) => {
+    if(fileName){
+        setDeleting(true);
+        const params = {
+            token: serverToken,
+            fileName
+        };
+        const popup = toast.loading(`Deleting file...`, toastOptions);
+        axios.delete(`${API_URL}/connection`, {params})
+        .then((response) => {
+            setFile(response.data);
+            setDeleting(false);
+            toast.update(popup, {
+                ...toastOptions,
+                render: `File deleted successfully.`, 
+                type: "success", 
+                isLoading: false,
+            });
+            router.push('/');
+        })
+        .catch(err => {
+            console.error(err);
+            setDeleting(false);
+            toast.update(popup, { 
+                ...toastOptions, 
+                render: `Error: couldn't delete file.`, 
+                type: "error", 
+                isLoading: false,
+            });
+            router.push(`/`);
+        });
     }
   }
 
@@ -135,13 +184,19 @@ useEffect(()=>{
                   }}/>
                 </div>
                 <h3 style={{textAlign: "center"}}>{fileName}</h3>
+                <div className="delete-option">
+                    <input type="text" value={deleteValue} onChange={(e)=>{setDeleteValue(e.target.value)}} placeholder={`Write "delete ${fileName}"`} />
+                    <button disabled={deleteValue !== `delete ${fileName}` || deleting} className="button red" onClick={()=>{
+                        deleteFile(fileName);
+                    }}>Delete</button>
+                </div>
             </div>
             <div className="navigator">
                 {file?.length > numPerPage && <>
                     <div className="number" onClick={()=>{navigate(-5)}}>{'<<'}</div>
                     <div className="number" onClick={()=>{navigate(-1)}}>{'<'}</div>
                 </>}
-                {file?.map( (s, i) => i <= numPerPage && (
+                {file && file.map && file.map( (s, i) => i <= numPerPage && (
                     <div key={`num${i}`} className={`number ${pointI + i === sIndex? 'active' : ''}`} onClick={()=>{setSIndex(pointI + i)}}>{pointI + i}</div>
                 ))}
                 {file?.length > numPerPage && <>
@@ -149,9 +204,11 @@ useEffect(()=>{
                     <div className="number" onClick={()=>{navigate(5)}}>{'>>'}</div>
                 </>}
             </div>
-            <div className="file">
-                {file && file[sIndex] && <pre>{htmlLog(file[sIndex])}</pre>}
-            </div>
+            {file && file[sIndex] ? 
+                <div className="file">{htmlLog(file[sIndex], true)}</div>
+            :
+                <h3 style={{textAlign:"center"}}>Loading file...</h3>
+            }
         </main>
       }
     </div>

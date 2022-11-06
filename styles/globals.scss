@@ -375,6 +375,12 @@ header{
   }
 }
 
+.file{
+  overflow: auto;
+  background-color: hsl(60, 80%, 95%);
+  // border-left: 2px solid purple;
+}
+
 .navigator{
   display: flex;
   gap: .2em;
@@ -397,36 +403,58 @@ header{
   }
 }
 
-.object{
-  .empty{
-    color: white;
-    user-select: none;
+.wrapper{
+  padding: 0 .5em 1em;
+  >.object >.value >.key >.solid{
+    margin-top: 1.7em;
   }
-  .value{
-    display: flex;
-    // gap: .5em;
-    .key{
-      color: purple;
-      font-weight: 500;
+  .object{
+    .empty{
+      color: white;
+      user-select: none;
+    }
+    .value{
       display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      .voice::before{
-        content:'—- ';
-        margin-left: -4px;
-      }
-      .solid{
-        height: 100%;
-        border-right: 2px solid purple;
-        margin-right: .24em;
-        margin-bottom: 0.47em;
+      // gap: .5em;
+      .key{
+        color: purple;
+        font-weight: 500;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        .voice::before{
+          content:'—- ';
+          margin-left: -4px;
+        }
+        .solid{
+          height: 100%;
+          border-right: 2px solid purple;
+          margin-right: .24em;
+          margin-bottom: 0.49em;
+        }
       }
     }
+    .string{
+      color: red;
+    }
+    .number{
+      color: blue;
+    }
   }
-  .string{
-    color: red;
-  }
-  .number{
-    color: blue;
+}
+
+.delete-option{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+  gap: .5rem;
+  justify-content: center;
+  padding: 1rem 0;
+  input{
+    padding: .25em .5em;
+    font-size: .75em;
+    width: 325px;
+    max-width: 100%;
   }
 }
