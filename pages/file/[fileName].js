@@ -113,7 +113,7 @@ useEffect(()=>{
   if(fileName) return (
     <div className="container">
       <Head>
-        <title>CV Connections Viewer - {fileName}</title>
+        <title>CV Connections Viewer - {isMounted ? fileName : ''}</title>
         <meta name="description" content="Created with love" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
