@@ -29,6 +29,9 @@ useEffect(()=>{
   },[router.isReady]);
 
   const [file, setFile] = useState(null);
+  useEffect(()=>{
+    console.log(file);
+  },[file]);
   const [fileLoaded, setFileLoaded] = useState(false);
 
   useEffect(()=>{
@@ -90,8 +93,8 @@ useEffect(()=>{
         return <pre className="wrapper">
             <div className="object">
                 <div className="value">
-                    <div class="key">
-                        <span class="solid"></span>
+                    <div className="key">
+                        <span className="solid"></span>
                     </div>
                     {htmlLog(file[sIndex])}
                 </div>

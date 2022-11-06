@@ -36,6 +36,7 @@ export default function Home() {
             <button disabled={isLoading} className="button" onClick={updateFilesList}>Update list</button>
           </div>
           <div className="files-list">
+            {filesList.list?.length === 0 &&<h2>No files found.</h2>}
             {filesList.list?.map( (file, i) => (
               <div key={`file${i}`} className="file-name">
                 <div className={`input token`}>
