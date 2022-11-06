@@ -15,7 +15,8 @@ useEffect(()=>{
   
   const {
     serverToken, toastOptions, API_URL,
-    preferredNames, setPreferredNames
+    preferredNames, setPreferredNames,
+    updateFilesList
   } = useContext(Context);
 
   const router = useRouter();
@@ -29,9 +30,6 @@ useEffect(()=>{
 
   const [file, setFile] = useState(null);
   const [fileLoaded, setFileLoaded] = useState(false);
-  useEffect(()=>{
-    console.log(file)
-  },[file])
 
   useEffect(()=>{
     if(fileName && !fileLoaded){
@@ -143,6 +141,7 @@ useEffect(()=>{
                 type: "success", 
                 isLoading: false,
             });
+            updateFilesList();
             router.push('/');
         })
         .catch(err => {
