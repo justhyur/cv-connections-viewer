@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import { useLocalStorage } from '/lib/useLocalStorage';
 import { toast } from 'react-toastify';
+import ReactJson from '/lib/react-json-view';
 
 export default function Bank() {
 
@@ -80,15 +81,31 @@ useEffect(()=>{
     }
   }
 
-  const htmlLog = (o, wrapped) => {
-    function isJSON(str) {
-        try {
-            JSON.parse(str);
-        } catch (e) {
-            return false;
+  function isJSON(str) {
+      try {
+          JSON.parse(str);
+      } catch (e) {
+          return false;
+      }
+      return true;
+  }
+  const JSONify = (o) => {
+    const n = {};
+    Object.entries(o).forEach(([key, value]) => {
+        switch(typeof value){
+            case "string":
+                n[key] = isJSON(value)? JSON.parse(value) : value;
+            break;
+            case "object":
+                n[key] = JSONify(value);
+            break;
+            default:
+                n[key] = value;
         }
-        return true;
-    }
+    });
+    return n;
+  }
+  const htmlLog = (o, wrapped) => {
     if(wrapped){
         return <pre className="wrapper">
             <div className="object">
@@ -206,8 +223,17 @@ useEffect(()=>{
                     <div className="number" onClick={()=>{navigate(5)}}>{'>>'}</div>
                 </>}
             </div>
-            {file && file[sIndex] ? 
-                <div className="file">{htmlLog(file[sIndex], true)}</div>
+            {file && file[sIndex] && document ? 
+                // <div className="file">{htmlLog(file[sIndex], true)}</div>
+                <div className="file">
+                    <ReactJson 
+                        src={JSONify(file[sIndex])}
+                        name={null}
+                        theme={"summerfruit"}
+                        displayDataTypes={false}
+                        quotesOnKeys={false}
+                    />
+                </div>
             :
                 <h3 style={{textAlign:"center"}}>Loading file...</h3>
             }
