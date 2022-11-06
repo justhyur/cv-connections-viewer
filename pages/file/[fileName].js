@@ -150,7 +150,7 @@ useEffect(()=>{
                 </>}
             </div>
             <div className="file">
-                <pre>{htmlLog(file[sIndex])}</pre>
+                {file && file[sIndex] && <pre>{htmlLog(file[sIndex])}</pre>}
             </div>
         </main>
       }
