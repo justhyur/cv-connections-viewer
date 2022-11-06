@@ -1,13 +1,10 @@
 import Head from 'next/head';
 import {useState, useEffect, useContext} from 'react';
 import { Context } from '/lib/Context';
-import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
-import moment from 'moment';
 import axios from 'axios';
 import { useLocalStorage } from '/lib/useLocalStorage';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 export default function Bank() {
 
@@ -94,7 +91,7 @@ useEffect(()=>{
         case "object":
             return <div className="object">
                 <div className="empty">empty</div>
-                {Object.entries(o).map( ([key, value]) => (<div className="value">
+                {Object.entries(o).map( ([key, value], i) => (<div key={`${key}entry${i}`} className="value">
                     <div className={`key`}>
                         <span className="voice">{key}:</span>
                         {typeof value === 'object' && 
